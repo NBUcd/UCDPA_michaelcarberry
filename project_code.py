@@ -1,10 +1,11 @@
 # Importing the packages that will be needed
 
+import os
 import numpy as np
 import pandas as pd
+from functools import reduce
 import matplotlib.pyplot as plt
 import seaborn as sn
-import os
 
 
 # Moving to the current directory and checking the contents
@@ -17,6 +18,7 @@ os.listdir(wd)
 # a UnicodeDecodeError so the additional argument of encoding='latin-1' was
 # included
 
+# Dataset imports:
 
 characteristics = pd.read_csv('caracteristics.csv', encoding='latin-1')
 holidays = pd.read_csv('holidays.csv', encoding='latin-1')
@@ -24,21 +26,30 @@ places = pd.read_csv('places.csv', encoding='latin-1')
 users = pd.read_csv('users.csv', encoding='latin-1')
 vehicles = pd.read_csv('vehicles.csv', encoding='latin-1')
 
+# Converting to dataframes:
+
 characteristics_df = pd.DataFrame(data = characteristics, index = None)
 holidays_df = pd.DataFrame(data = holidays, index = None)
 places_df = pd.DataFrame(data = places, index = None)
 users_df = pd.DataFrame(data = users, index = None)
 vehicles_df = pd.DataFrame(data = vehicles, index = None)
 
+# Taking a look at the data:
 
-# Firstly I want to see what the obvious differences are and that should be
+df_list = (characteristics_df, holidays_df, places_df, users_df, vehicles_df)
+for df in df_list:
+    print(df.head())
+
+# For my purposes I can do without the holidays_df dataframe.
+
+# Next I want to see what the obvious differences are and that should be
 # the length - i.e. do they all contain the same number of rows?
-
 
 print(characteristics_df.shape,
       places_df.shape,
       users_df.shape,
       vehicles_df.shape)
+
 
 
 # The datasets are all of different lengths so so firstly I'll take a look at
@@ -56,7 +67,9 @@ df_headers_1_2 = np.append(characteristics_df.columns.values,
 df_headers_3_4 = np.append(users_df.columns.values,
                            vehicles_df.columns.values)
 
+
 all_df_headers = np.append(df_headers_1_2, df_headers_3_4)
+
 
 common_headers = []
 all_df_headers_list = list(all_df_headers)
@@ -72,60 +85,102 @@ print(common_headers)
 
 
 
-#print(characteristics_df.info())
-#print(characteristics_df.describe())
+# Now we'll briefly look at the headings of each of the dataframes and see
+# what data to pull out. I'll then create new dataframes with just the columns
+# that will be usable for my purposes.
 
-#print(characteristics_df.values)
-#print(characteristics_df.columns)
-#print(characteristics_df.index)
+# Starting in order imported:
 
-
-
-# To make the datasets easier to use, I'll change the more obviously useful
-# headings from French to English
-# To do this, I'll create a single list (as a numpy array) of the headers 
-# with duplicates removed and look up against a dictionary containing the 
-# English translation.
-# then I'll iterate through all of the headings in the individual dataframes 
-# to replace them with their English translation
-
-#df_headers_1_2 = np.append(characteristics_df.columns.values, 
-#                           places_df.columns.values)
-
-# np.append can only take a maximum of 3 arguments whereas there's 4 dataframes
-
-#df_headers_3_4 = np.append(users_df.columns.values,
-#                           vehicles_df.columns.values)
-
-#all_df_headers = np.append(df_headers_1_2, df_headers_3_4)
-
-#unique_df_headers = np.unique(all_df_headers)
-
-#df_headers_to_translate = ['an', 'mois', 'jour', 'hrmn', 'lum', 'voie', 'circ', 
-#                        'grav', 'Year_on']
-
-#translation = {'an':'year', 'mois':'month', 'jour':'day', 'hrmn':'time', 
-#               'lum':'lighting', 'voie':'road_number', 
-#               'circ':'traffic_regime', 'grav':'severity', 'Year_on':'DOB'}
+print(characteristics_df.columns.values)
+print(places_df.columns.values)
+print(users_df.columns.values)
+print(vehicles_df.columns.values)
 
 
-#for header in users_df.columns.values:
-#    if header in df_headers_to_translate:
-#        print(translation[header])
-#    else:
-#        print('not in list')
-
-#for header in users_df.columns.values:
-#    if header in df_headers_to_translate:
-#        users_df.rename({header:translation[header]})
-#    else:
-#        pass
-    
-#print(users_df.head())
+characteristics_df_selected_columns = characteristics_df[['Num_Acc', 'an', 
+'mois', 'jour', 'hrmn', 'lum', 'atm', 'agg', 'col']]
+# 'agg' is the correct heading, not 'localisation' as per Kaggle notes.
+places_df_selected_columns = places_df[['Num_Acc','catr', 'plan', 
+ 'surf', 'situ']]
+users_df_selected_columns = users_df[['Num_Acc', 'catu', 'grav', 'sexe',
+'an_nais', 'trajet', 'secu']]
+vehicles_df_selected_columns = vehicles_df[['Num_Acc', 'catv']]
 
 
 
-#print(all_df_headers)
-#print(users_df['secu'])
-#print(df_headers_to_translate)
+# Joining the four datasets to create one useable dataset:
+
+all_df_selected_columns = [characteristics_df_selected_columns,
+                           places_df_selected_columns,
+                           users_df_selected_columns,
+                           vehicles_df_selected_columns]
+
+combined_df = reduce(lambda left,right: pd.merge(left,right,on='Num_Acc'), 
+                   all_df_selected_columns)
+
+print(combined_df.columns.values)   # The headings are all there
+print(combined_df.head())           # The data looks to be correct
+
+
+
+# Renaming the headings to make them more user-friendly:
+
+combined_df_headings = [str(heading) for heading in combined_df.columns.values]
+
+new_headings = ['Num_Acc', 'year', 'month', 'day', 'time', 'lighting',
+                'atmos_conditions', 'localisation', 'collision_type', 
+                'road_cat', 'road_shape', 'surface', 'situation', 'user_cat',
+                'severity', 'sex', 'dob', 'reason', 'safety_equip',
+                'vehicle_cat']
+
+
+headings_dict = dict(zip(combined_df_headings, new_headings))
+print(headings_dict)
+
+
+master_df = combined_df.rename(headings_dict, axis = 1)
+print(master_df.columns.values)
+print(master_df.head())
+
+
+
+# Now that we have the master dataset, we'll do some exploration & cleaning:
+
+# defining a function to clean change the 'year' values to 2000's
+
+def add_millennium(year):
+    return year + 2000
+
+master_df['year'] = master_df['year'].apply(add_millennium)
+
+# creating an age column from the 'year' and 'dob'
+
+master_df['age'] = master_df['year'] - master_df['dob']
+print(master_df[['year', 'dob', 'age']])
+
+# creating a count column for the number of accidents - dividing the 'year' by
+# itself as missing data should throw up an error
+
+master_df['acc_count'] = master_df['year'] / master_df['year']
+print(master_df['acc_count'].isnull().sum())   # no misssing data
+print(master_df.groupby('year').count())
+print(master_df['acc_count'])
+
+
+print(master_df.info(null_counts = True))
+print(master_df.isnull().sum())
+null_list = master_df.columns[master_df.isnull().any()].tolist()
+
+#print(master_df.describe())
+#print(master_df.values)
+#print(master_df.columns)
+#print(master_df.index)
+
+
+
+
+# Visualizing the data:
+
+
+
 
