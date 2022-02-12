@@ -5,13 +5,17 @@ import numpy as np
 import pandas as pd
 from functools import reduce
 import matplotlib.pyplot as plt
-import seaborn as sn
+import seaborn as sns
+
+
 
 
 # Moving to the current directory and checking the contents
 
 wd = os.getcwd()
 os.listdir(wd)
+
+
 
 
 # Importing the datasets which are .csv files into pandas dataframes produced 
@@ -42,6 +46,9 @@ for df in df_list:
 
 # For my purposes I can do without the holidays_df dataframe.
 
+
+
+
 # Next I want to see what the obvious differences are and that should be
 # the length - i.e. do they all contain the same number of rows?
 
@@ -49,6 +56,7 @@ print(characteristics_df.shape,
       places_df.shape,
       users_df.shape,
       vehicles_df.shape)
+
 
 
 
@@ -85,6 +93,7 @@ print(common_headers)
 
 
 
+
 # Now we'll briefly look at the headings of each of the dataframes and see
 # what data to pull out. I'll then create new dataframes with just the columns
 # that will be usable for my purposes.
@@ -108,6 +117,7 @@ vehicles_df_selected_columns = vehicles_df[['Num_Acc', 'catv']]
 
 
 
+
 # Joining the four datasets to create one useable dataset:
 
 all_df_selected_columns = [characteristics_df_selected_columns,
@@ -120,6 +130,7 @@ combined_df = reduce(lambda left,right: pd.merge(left,right,on='Num_Acc'),
 
 print(combined_df.columns.values)   # The headings are all there
 print(combined_df.head())           # The data looks to be correct
+
 
 
 
@@ -141,6 +152,7 @@ print(headings_dict)
 master_df = combined_df.rename(headings_dict, axis = 1)
 print(master_df.columns.values)
 print(master_df.head())
+
 
 
 
@@ -166,10 +178,26 @@ print(master_df['acc_count'].isnull().sum())   # no misssing data
 print(master_df.groupby('year').count())
 print(master_df['acc_count'])
 
+# Removing duplicates:
+
+duplications = master_df.duplicated()
+print(duplications.value_counts())
+master_df = master_df.drop_duplicates()
+
+duplications = master_df.duplicated()
+print(duplications.value_counts())       # the True's have been removed
+
+
+
+
+# CHARTS
+
+
 
 print(master_df.info(null_counts = True))
 print(master_df.isnull().sum())
 null_list = master_df.columns[master_df.isnull().any()].tolist()
+
 
 #print(master_df.describe())
 #print(master_df.values)
