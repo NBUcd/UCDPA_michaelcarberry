@@ -19,16 +19,21 @@ os.listdir(wd)
 
 
 # Importing the datasets which are .csv files into pandas dataframes produced 
-# a UnicodeDecodeError so the additional argument of encoding='latin-1' was
-# included
+# a low memory and UnicodeDecodeError so the additional arguments of 
+# 'low_memory = False' and encoding = 'latin-1' were included
 
 # Dataset imports:
 
-characteristics = pd.read_csv('caracteristics.csv', encoding='latin-1')
-holidays = pd.read_csv('holidays.csv', encoding='latin-1')
-places = pd.read_csv('places.csv', encoding='latin-1')
-users = pd.read_csv('users.csv', encoding='latin-1')
-vehicles = pd.read_csv('vehicles.csv', encoding='latin-1')
+characteristics = pd.read_csv('caracteristics.csv', low_memory = False, 
+                              encoding = 'latin-1')
+holidays = pd.read_csv('holidays.csv', low_memory = False, 
+                       encoding = 'latin-1')
+places = pd.read_csv('places.csv', low_memory = False, 
+                     encoding = 'latin-1')
+users = pd.read_csv('users.csv', low_memory = False, 
+                    encoding = 'latin-1')
+vehicles = pd.read_csv('vehicles.csv', low_memory = False, 
+                       encoding = 'latin-1')
 
 # Converting to dataframes:
 
@@ -158,7 +163,7 @@ print(master_df.head())
 
 # Now that we have the master dataset, we'll do some exploration & cleaning:
 
-# defining a function to clean change the 'year' values to 2000's
+# defining a function to change the 'year' values to 2000's
 
 def add_millennium(year):
     return year + 2000
@@ -171,21 +176,75 @@ master_df['age'] = master_df['year'] - master_df['dob']
 print(master_df[['year', 'dob', 'age']])
 
 # creating a count column for the number of accidents - dividing the 'year' by
-# itself as missing data should throw up an error
+# itself as missing data should throw up an error - note, this may not be used
 
 master_df['acc_count'] = master_df['year'] / master_df['year']
 print(master_df['acc_count'].isnull().sum())   # no misssing data
 print(master_df.groupby('year').count())
 print(master_df['acc_count'])
 
+# splitting out the 'safety_equip' column into type and whether used or not:
+
+master_df['safety_equip'].unique()
+master_df['safety_equip'].fillna(0, inplace = True)
+print(master_df['safety_equip'].unique())
+
+
+master_df['safety_equip_type'] = master_df['safety_equip'] / 10 # to be able to index
+master_df['safety_equip_type'] = master_df['safety_equip_type'].astype('string')
+
+
+def type_split(column):
+    return column[0]
+
+master_df['safety_equip_type'] = master_df['safety_equip_type'].apply(type_split)
+print(master_df['safety_equip_type'].head())
+
+
+master_df['safety_equip_type'] = master_df['safety_equip_type'].\
+    replace({"1": "Belt", "2": "Helmet", "3": "Children's Device",
+             "4": "Reflective Equipment", "9": "Other"})
+    
+print(master_df['safety_equip_type'].head())
+
+
+
+master_df['safety_equip_used'] = master_df['safety_equip'] / 10 # to be able to index
+master_df['safety_equip_used'] = master_df['safety_equip_used'].astype('string')
+
+def use_split(column):
+    return column[-1]
+
+master_df['safety_equip_used'] = master_df['safety_equip_used'].apply(use_split)
+print(master_df['safety_equip_used'].head())
+
+master_df['safety_equip_used'] = master_df['safety_equip_used'].\
+    replace({"1": "Yes", "2": "No", "3": "Not Determinable"})
+    
+print(master_df['safety_equip_used'].head())
+
+
+#master_df['safety_equip_type'] = master_df['safety_equip'].str.split('.')
+#print(master_df['safety_equip_type'].dtypes)
+#master_df['safety_equip_type'] = master_df['safety_equip_type'].str.split(n = 0, expand = False).str[0]
+#print(master_df['safety_equip_type'].head())
+
+#master_df['safety_equip_used'] = master_df['safety_equip_type'].astype(str)
+
+#print(master_df[['safety_equip','safety_equip_type', 'safety_equip_used']].head())
+
+
+
+#master_df['safety_equip_type'] = master_df['safety_equip_type'].str(:-2).astype(float)
+
 # Removing duplicates:
 
-duplications = master_df.duplicated()
-print(duplications.value_counts())
-master_df = master_df.drop_duplicates()
+#duplications = master_df.duplicated()
+#print(duplications.value_counts())
+#master_df = master_df.drop_duplicates()
 
-duplications = master_df.duplicated()
-print(duplications.value_counts())       # the True's have been removed
+#duplications = master_df.duplicated()
+#print(duplications.value_counts())       # the True's have been removed
 
 
 
@@ -194,9 +253,9 @@ print(duplications.value_counts())       # the True's have been removed
 
 
 
-print(master_df.info(null_counts = True))
-print(master_df.isnull().sum())
-null_list = master_df.columns[master_df.isnull().any()].tolist()
+#print(master_df.info(null_counts = True))
+#print(master_df.isnull().sum())
+#null_list = master_df.columns[master_df.isnull().any()].tolist()
 
 
 #print(master_df.describe())
