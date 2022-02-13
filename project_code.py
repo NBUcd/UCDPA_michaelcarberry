@@ -283,10 +283,45 @@ print(duplications.value_counts())       # the True's have been removed
 
 # CHARTS
 
-ax = sns.countplot(x = 'severity', hue = ('safety_equip_type'), 
+
+
+ax = sns.countplot(x = 'atmos_conditions', data = master_df)
+ax.set_title('Weather conditions at time of accident')
+ax.set_ylabel('Number of accidents')
+plt.show()
+
+
+
+ax = sns.countplot(x = 'safety_equip_used', 
+                   hue = 'sex', 
                    data = master_df)
-ax.set_title('Severity of accident based on using safety equipment')
-ax.set_ylabel('Number of people')
+ax.set_title('Use of safety equipment by sex')
+ax.set_ylabel('Number of accidents')
+plt.show()
+
+
+
+x = sns.countplot(x = 'sex', data = master_df)
+ax.set_title('Accidents by gender')
+ax.set_ylabel('Number of accidents')
+plt.show()
+
+
+
+x = sns.countplot(x = 'sex', 
+                   hue = 'severity', 
+                   data = master_df)
+ax.set_title('Accidents by gender')
+ax.set_ylabel('Number of accidents')
+plt.show()
+
+
+
+ax = sns.countplot(x = 'severity', 
+                   hue = ('safety_equip_type'), 
+                   data = master_df)
+ax.set_title('Severity of accident compared to safety equipment')
+ax.set_ylabel('Number of accidents')
 plt.show()
 
 
