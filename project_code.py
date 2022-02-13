@@ -157,6 +157,7 @@ print(headings_dict)
 master_df = combined_df.rename(headings_dict, axis = 1)
 print(master_df.columns.values)
 print(master_df.head())
+print(master_df['atmos_conditions'].head())
 
 
 
@@ -224,32 +225,69 @@ master_df['safety_equip_used'] = master_df['safety_equip_used'].\
 print(master_df['safety_equip_used'].head())
 
 
-#master_df['safety_equip_type'] = master_df['safety_equip'].str.split('.')
-#print(master_df['safety_equip_type'].dtypes)
-#master_df['safety_equip_type'] = master_df['safety_equip_type'].str.split(n = 0, expand = False).str[0]
-#print(master_df['safety_equip_type'].head())
 
-#master_df['safety_equip_used'] = master_df['safety_equip_type'].astype(str)
+# Renaming the 'severity' column items:
 
-#print(master_df[['safety_equip','safety_equip_type', 'safety_equip_used']].head())
+master_df['severity'] = master_df['severity'].replace({1: "Unscathed", 
+                                                       2: "Killed", 
+                                                       3: "Hospitalized wounded", 
+                                                       4: "Light Injury"})
+print(master_df['severity'].unique())
+print(master_df['severity'].head())
 
 
 
-#master_df['safety_equip_type'] = master_df['safety_equip_type'].str(:-2).astype(float)
+# Renaming the 'sex' column items:
+
+master_df['sex'] = master_df['sex'].replace({1: "Male", 2: "Female"})
+print(master_df['sex'].unique())
+print(master_df['sex'].head())
+
+
+
+# Renaming the 'lighting' column items:
+
+master_df['lighting'] = master_df['lighting'].\
+    replace({1: "Full day", 2: "Twilight or dawn", 
+             3: "Night without public lighting", 
+             4: "Night with public lighting not lit",
+             5: "Night with public lighting on"})
+print(master_df['lighting'].head())
+print(master_df['lighting'].unique())
+
+
+
+# Renaming the 'atmost_conditions' column items:
+    
+master_df['atmos_conditions'] = master_df['atmos_conditions'].\
+    replace({1.0: "Normal", 2.0: "Light rain", 3.0: "Heavy rain", 4.0: "Snow - hail",
+             5.0: "Fog - smoke", 6.0: "Strong wind - storm", 7.0: "Dazzling weather", 
+             8.0: "Cloudy weather", 9.0: "Other"})
+
+
+master_df['atmos_conditions'].fillna(0.0, inplace = True)
+
+
 
 # Removing duplicates:
 
-#duplications = master_df.duplicated()
-#print(duplications.value_counts())
-#master_df = master_df.drop_duplicates()
+duplications = master_df.duplicated()
+print(duplications.value_counts())
+master_df = master_df.drop_duplicates()
 
-#duplications = master_df.duplicated()
-#print(duplications.value_counts())       # the True's have been removed
+duplications = master_df.duplicated()
+print(duplications.value_counts())       # the True's have been removed
 
 
 
 
 # CHARTS
+
+ax = sns.countplot(x = 'severity', hue = ('safety_equip_type'), 
+                   data = master_df)
+ax.set_title('Severity of accident based on using safety equipment')
+ax.set_ylabel('Number of people')
+plt.show()
 
 
 
