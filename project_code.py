@@ -284,17 +284,20 @@ print(duplications.value_counts())       # the True's have been removed
 # CHARTS
 
 
-
+palette = sns.color_palette("bright", 6)
 ax = sns.countplot(x = 'atmos_conditions', data = master_df)
+plt.ticklabel_format(style='plain', axis='y')
 ax.set_title('Weather conditions at time of accident')
 ax.set_ylabel('Number of accidents')
 plt.show()
 
 
 
+sns.color_palette("mako", as_cmap = True)
 ax = sns.countplot(x = 'safety_equip_used', 
                    hue = 'sex', 
                    data = master_df)
+plt.ticklabel_format(style='plain', axis='y')
 ax.set_title('Use of safety equipment by sex')
 ax.set_ylabel('Number of accidents')
 plt.show()
@@ -311,6 +314,8 @@ plt.show()
 x = sns.countplot(x = 'sex', 
                    hue = 'severity', 
                    data = master_df)
+sns.color_palette("husl", 8)
+plt.ticklabel_format(style='plain', axis='y')
 ax.set_title('Accidents by gender')
 ax.set_ylabel('Number of accidents')
 plt.show()
@@ -323,6 +328,7 @@ ax = sns.countplot(x = 'severity',
 ax.set_title('Severity of accident compared to safety equipment')
 ax.set_ylabel('Number of accidents')
 plt.show()
+
 
 
 
@@ -339,7 +345,7 @@ plt.show()
 
 
 
-# Visualizing the data:
+
 
 
 
