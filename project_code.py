@@ -287,27 +287,66 @@ sns.set_theme(style = 'darkgrid')
 sns.set_context('paper')
 
 
-ax = sns.countplot(x = 'sex', data = master_df, linewidth = 5, 
+# Number of accidents by gender
+
+ax = sns.countplot(x = 'sex', data = master_df, linewidth = 2,
                    edgecolor = sns.color_palette('dark', 3))
 plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Accidents by gender')
-ax.set_ylabel('Number of accidents')
+ax.set_title('Accidents by Gender')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'white',
+               va = 'top', 
+               size = 10)
 plt.show()
 
 
+
+# Severity of accidents by gender
 
 ax = sns.countplot(x = 'sex', 
-                   hue = 'severity', 
+                   hue = 'severity',
+                   edgecolor = sns.color_palette('dark', 3), 
                    data = master_df)
-sns.color_palette("husl", 8)
 plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Accidents by gender')
-ax.set_ylabel('Number of accidents')
+ax.set_title('Severity of Accidents by Gender')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'black',
+               va = 'top', 
+               size = 10)
 plt.show()
 
 
 
-g = sns.catplot(x = 'safety_equip_used', hue = 'sex', col = 'severity',
+# Severity of accident with use of safety equipment
+
+ax = sns.countplot(x = 'severity', 
+                   hue = 'safety_equip_used', 
+                   data = master_df[-(master_df.safety_equip_used == '0')])
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Severity of Accident with use of Safety Equipment')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'black',
+               va = 'top', 
+               size = 10)
+plt.show()
+
+
+
+# Use of safety equipment by sex
+
+ax = sns.catplot(x = 'safety_equip_used', hue = 'sex', col = 'severity',
                 data = master_df[-(master_df.safety_equip_used == '0')],
                 kind = 'count',
                 height = 4, aspect = .7)
@@ -315,24 +354,7 @@ plt.show()
 
 
 
-ax = sns.countplot(x = 'severity', 
-                   hue = 'safety_equip_used', 
-                   data = master_df[-(master_df.safety_equip_used == '0')])
-plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Severity of accident compared to safety equipment')
-ax.set_ylabel('Number of accidents')
-plt.show()
-
-
-sns.color_palette("mako", as_cmap = True)
-ax = sns.countplot(x = 'safety_equip_used', 
-                   hue = 'sex', 
-                   data = master_df)
-plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Use of safety equipment by sex')
-ax.set_ylabel('Number of accidents')
-plt.show()
-
+# Weather conditions at the time of the accident
 
 palette = sns.color_palette('bright', 6)
 ax = sns.countplot(x = 'atmos_conditions', data = master_df)
@@ -343,10 +365,87 @@ plt.show()
 
 
 
+# Lighting conditions at the time of the accident
+
+ax = sns.countplot(x = 'lighting', hue = 'sex', 
+                   data = master_df, linewidth = 2,
+                   edgecolor = sns.color_palette('dark', 3))
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Lighting Conditions at the time of the Accident')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'white',
+               va = 'top', 
+               size = 10)
+plt.show()
 
 
 
+# Collision type
 
+ax = sns.countplot(x = 'collision_type', hue = 'sex', 
+                   data = master_df, linewidth = 2,
+                   edgecolor = sns.color_palette('dark', 3))
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Collision Type')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'white',
+               va = 'top', 
+               size = 10)
+plt.show()
+
+
+
+# Reason for the journey
+
+ax = sns.countplot(x = 'reason', hue = 'sex', data = master_df, 
+                   linewidth = 2,
+                   edgecolor = sns.color_palette('dark', 3))
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Reason for Journey')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'white',
+               va = 'top', 
+               size = 10)
+plt.show()
+
+
+
+# Category of user
+
+ax = sns.countplot(x = 'user_cat', hue = 'sex', data = master_df, 
+                   linewidth = 2,
+                   edgecolor = sns.color_palette('dark', 3))
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Category of User')
+ax.set_ylabel('Number of Accidents')
+for p in ax.patches:
+   ax.annotate('{:.1f}'.format(p.get_height()),
+               (p.get_x() + 0.2, 
+                p.get_height()), 
+               color = 'white',
+               va = 'top', 
+               size = 10)
+plt.show()
+
+
+
+ax = sns.catplot(x = 'user_cat', hue = 'sex', col = 'severity',
+                data = master_df,
+                kind = 'count',
+                height = 4, aspect = .7)
+plt.show()
 
 
 
