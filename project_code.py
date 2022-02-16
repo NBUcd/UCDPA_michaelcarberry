@@ -283,14 +283,45 @@ print(duplications.value_counts())       # the True's have been removed
 
 # CHARTS
 
+sns.set_theme(style = 'darkgrid')
+sns.set_context('paper')
 
-palette = sns.color_palette("bright", 6)
-ax = sns.countplot(x = 'atmos_conditions', data = master_df)
+
+ax = sns.countplot(x = 'sex', data = master_df, linewidth = 5, 
+                   edgecolor = sns.color_palette('dark', 3))
 plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Weather conditions at time of accident')
+ax.set_title('Accidents by gender')
 ax.set_ylabel('Number of accidents')
 plt.show()
 
+
+
+ax = sns.countplot(x = 'sex', 
+                   hue = 'severity', 
+                   data = master_df)
+sns.color_palette("husl", 8)
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Accidents by gender')
+ax.set_ylabel('Number of accidents')
+plt.show()
+
+
+
+g = sns.catplot(x = 'safety_equip_used', hue = 'sex', col = 'severity',
+                data = master_df[-(master_df.safety_equip_used == '0')],
+                kind = 'count',
+                height = 4, aspect = .7)
+plt.show()
+
+
+
+ax = sns.countplot(x = 'severity', 
+                   hue = 'safety_equip_used', 
+                   data = master_df[-(master_df.safety_equip_used == '0')])
+plt.ticklabel_format(style='plain', axis='y')
+ax.set_title('Severity of accident compared to safety equipment')
+ax.set_ylabel('Number of accidents')
+plt.show()
 
 
 sns.color_palette("mako", as_cmap = True)
@@ -303,31 +334,18 @@ ax.set_ylabel('Number of accidents')
 plt.show()
 
 
-
-x = sns.countplot(x = 'sex', data = master_df)
-ax.set_title('Accidents by gender')
-ax.set_ylabel('Number of accidents')
-plt.show()
-
-
-
-x = sns.countplot(x = 'sex', 
-                   hue = 'severity', 
-                   data = master_df)
-sns.color_palette("husl", 8)
+palette = sns.color_palette('bright', 6)
+ax = sns.countplot(x = 'atmos_conditions', data = master_df)
 plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Accidents by gender')
+ax.set_title('Weather conditions at time of accident')
 ax.set_ylabel('Number of accidents')
 plt.show()
 
 
 
-ax = sns.countplot(x = 'severity', 
-                   hue = ('safety_equip_type'), 
-                   data = master_df)
-ax.set_title('Severity of accident compared to safety equipment')
-ax.set_ylabel('Number of accidents')
-plt.show()
+
+
+
 
 
 
