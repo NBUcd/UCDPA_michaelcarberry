@@ -354,56 +354,15 @@ plt.show()
 
 
 
-# Weather conditions at the time of the accident
-
-palette = sns.color_palette('bright', 6)
-ax = sns.countplot(x = 'atmos_conditions', data = master_df)
-plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Weather conditions at time of accident')
-ax.set_ylabel('Number of accidents')
-plt.show()
-
-
-
-# Lighting conditions at the time of the accident
-
-ax = sns.countplot(x = 'lighting', hue = 'sex', 
-                   data = master_df, linewidth = 2,
-                   edgecolor = sns.color_palette('dark', 3))
-plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Lighting Conditions at the time of the Accident')
-ax.set_ylabel('Number of Accidents')
-for p in ax.patches:
-   ax.annotate('{:.1f}'.format(p.get_height()),
-               (p.get_x() + 0.2, 
-                p.get_height()), 
-               color = 'white',
-               va = 'top', 
-               size = 10)
-plt.show()
-
-
-
-# Collision type
-
-ax = sns.countplot(x = 'collision_type', hue = 'sex', 
-                   data = master_df, linewidth = 2,
-                   edgecolor = sns.color_palette('dark', 3))
-plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Collision Type')
-ax.set_ylabel('Number of Accidents')
-for p in ax.patches:
-   ax.annotate('{:.1f}'.format(p.get_height()),
-               (p.get_x() + 0.2, 
-                p.get_height()), 
-               color = 'white',
-               va = 'top', 
-               size = 10)
-plt.show()
-
-
-
 # Reason for the journey
+
+master_df['reason'] = master_df['reason'].\
+    replace({1.0: "Home - work", 2.0: "Home - school", 3.0: "Shopping", 
+             4.0: "Professional use", 5.0: "Promenade - leisure", 
+             9.0: "Other"})
+
+
+master_df['reason'].fillna(0.0, inplace = True)
 
 ax = sns.countplot(x = 'reason', hue = 'sex', data = master_df, 
                    linewidth = 2,
@@ -411,41 +370,9 @@ ax = sns.countplot(x = 'reason', hue = 'sex', data = master_df,
 plt.ticklabel_format(style='plain', axis='y')
 ax.set_title('Reason for Journey')
 ax.set_ylabel('Number of Accidents')
-for p in ax.patches:
-   ax.annotate('{:.1f}'.format(p.get_height()),
-               (p.get_x() + 0.2, 
-                p.get_height()), 
-               color = 'white',
-               va = 'top', 
-               size = 10)
 plt.show()
 
 
-
-# Category of user
-
-ax = sns.countplot(x = 'user_cat', hue = 'sex', data = master_df, 
-                   linewidth = 2,
-                   edgecolor = sns.color_palette('dark', 3))
-plt.ticklabel_format(style='plain', axis='y')
-ax.set_title('Category of User')
-ax.set_ylabel('Number of Accidents')
-for p in ax.patches:
-   ax.annotate('{:.1f}'.format(p.get_height()),
-               (p.get_x() + 0.2, 
-                p.get_height()), 
-               color = 'white',
-               va = 'top', 
-               size = 10)
-plt.show()
-
-
-
-ax = sns.catplot(x = 'user_cat', hue = 'sex', col = 'severity',
-                data = master_df,
-                kind = 'count',
-                height = 4, aspect = .7)
-plt.show()
 
 
 
