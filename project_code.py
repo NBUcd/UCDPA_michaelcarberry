@@ -357,12 +357,12 @@ plt.show()
 # Reason for the journey
 
 master_df['reason'] = master_df['reason'].\
-    replace({1.0: "Home - work", 2.0: "Home - school", 3.0: "Shopping", 
-             4.0: "Professional use", 5.0: "Promenade - leisure", 
-             9.0: "Other"})
+    replace({0.0: "Not known", 1.0: "Home - work", 2.0: "Home - school", 
+             3.0: "Shopping", 4.0: "Professional use", 
+             5.0: "Promenade - leisure", 9.0: "Other"})
 
-
-master_df['reason'].fillna(0.0, inplace = True)
+master_df.drop(master_df[master_df['reason'] == "Not known"].index,
+               inplace = True)
 
 ax = sns.countplot(x = 'reason', hue = 'sex', data = master_df, 
                    linewidth = 2,
@@ -371,6 +371,7 @@ plt.ticklabel_format(style='plain', axis='y')
 ax.set_title('Reason for Journey')
 ax.set_ylabel('Number of Accidents')
 plt.show()
+
 
 
 
